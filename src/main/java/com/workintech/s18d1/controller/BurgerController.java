@@ -37,14 +37,12 @@ public class BurgerController {
 
     @PostMapping
     public ResponseEntity<Burger> save(@RequestBody Burger burger) {
-        BurgerValidation.validate(burger);
         Burger saved = burgerDao.save(burger);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return ResponseEntity.ok(saved);
     }
 
     @PutMapping
     public ResponseEntity<Burger> updateBurger(@RequestBody Burger burger) {
-        BurgerValidation.validate(burger);
         Burger updated = burgerDao.update(burger);
         return ResponseEntity.ok(updated);
     }
@@ -63,17 +61,12 @@ public class BurgerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBurger(@PathVariable Long id) {
-        Burger burger = burgerDao.findById(id);
-        if (burger == null) {
-            throw new RuntimeException("Burger not found"); // Eğer ID bulunamazsa hata fırlat
-        }
-
         burgerDao.remove(id);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/findByPrice")
-    public List<Burger> findByPrice(@RequestParam Double price) {
+    @GetMapping("/price/{price}")
+    public List<Burger> findByPrice(@PathVariable Double price) {
         return burgerDao.findByPrice(price);
     }
 
@@ -82,8 +75,8 @@ public class BurgerController {
         return burgerDao.findByBreadType(breadType);
     }
 
-    @GetMapping("/findByContent")
-    public List<Burger> findByContent(@RequestParam String content) {
+    @GetMapping("/content/{content}")
+    public List<Burger> findByContent(@PathVariable String content) {
         return burgerDao.findByContent(content);
     }
 

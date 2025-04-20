@@ -37,7 +37,7 @@ public class BurgerDaoImpl implements BurgerDao {
 
     @Override
     public List<Burger> findByPrice(Double price) {
-        TypedQuery<Burger> query = entityManager.createQuery("SELECT e FROM Burger e WHERE e.price > :price ORDER BY e.price DESC", Burger.class).setParameter("price", Burger.class);
+        TypedQuery<Burger> query = entityManager.createQuery("SELECT e FROM Burger e WHERE e.price = :price ORDER BY e.price ASC", Burger.class);
         query.setParameter("price", price);
         return query.getResultList();
     }
