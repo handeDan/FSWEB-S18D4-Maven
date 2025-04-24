@@ -2,11 +2,14 @@ package com.workintech.s18d1.dao;
 
 import com.workintech.s18d1.entity.BreadType;
 import com.workintech.s18d1.entity.Burger;
+import com.workintech.s18d1.exceptions.BurgerException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -26,8 +29,11 @@ public class BurgerDaoImpl implements BurgerDao {
 
     @Override
     public Burger findById(long id) {
-        return entityManager.find(Burger.class, id);
-    }
+        Burger burger = entityManager.find(Burger.class, id);
+        if (burger == null) {
+            throw new BurgerException("Burger not found", HttpStatus.NOT_FOUND);
+        }
+        return burger;    }
 
     @Override
     public List<Burger> findAll() {
@@ -51,7 +57,7 @@ public class BurgerDaoImpl implements BurgerDao {
 
     @Override
     public List<Burger> findByContent(String content) {
-        TypedQuery<Burger> query = entityManager.createQuery("SELECT e FROM Burger e WHERE e.contents LIKE CONCAT('%', :content, '%')", Burger.class).setParameter("price", Burger.class);
+        TypedQuery<Burger> query = entityManager.createQuery("SELECT b FROM Burger b WHERE b.content = :content", Burger.class);
         query.setParameter("content", content);
         return query.getResultList();
     }
